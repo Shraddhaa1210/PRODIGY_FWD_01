@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureAuth Pro | Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ====== AUTH CARD ====== */
+        .auth-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+            display: none;
+        }
+
+        .auth-card.active {
+            display: block;
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s linear infinite;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        /* ====== TABS ====== */
+        .tabs {
+            display: flex;
+            background: #f1f3f9;
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            transition: var(--transition);
+            border-radius: 50px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .tab.active {
+            color: white;
+        }
+
+        .tab-slider {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            height: calc(100% - 10px);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 50px;
+            transition: var(--transition);
+            width: calc(50% - 10px);
+        }
+
+        /* ====== FORMS ====== */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5ee;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            color: var(--gray);
+        }
+
+        /* ====== BUTTONS ====== */
+        .btn {
+            padding: 16px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-google:hover {
+            border-color: #DB4437;
+            color: #DB4437;
+        }
+
+        .btn-facebook {
+            background: white;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-facebook:hover {
+            border-color: #4267B2;
+            color: #4267B2;
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* ====== SOCIAL LOGIN ====== */
+        .social-login {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .social-login::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e5ee;
+        }
+
+        .social-login p {
+            background: white;
+            display: inline-block;
+            padding: 0 20px;
+            color: var(--gray);
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* ====== DASHBOARD ====== */
+        .dashboard {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            animation: bounce 2s infinite;
+        }
+
+        .user-details h2 {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .status-verified {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+
+        .status-unverified {
+            background: rgba(248, 150, 30, 0.1);
+            color: var(--warning);
+        }
+
+        /* ====== CARDS ====== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .card-icon.profile { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .card-icon.security { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .card-icon.social { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .card-icon.admin { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* ====== ACTIVITY FEED ====== */
+        .activity-feed {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .activity-feed h3 {
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f3f9;
+            animation: slideRight 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:nth-child(1) { animation-delay: 0.1s; }
+        .activity-item:nth-child(2) { animation-delay: 0.2s; }
+        .activity-item:nth-child(3) { animation-delay: 0.3s; }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+        }
+
+        .activity-icon.success { background: var(--success); }
+        .activity-icon.warning { background: var(--warning); }
+        .activity-icon.danger { background: var(--danger); }
+
+        .activity-details h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .activity-details p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .activity-time {
+            margin-left: auto;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* ====== RESULTS PANEL ====== */
+        .results-panel {
+            background: var(--dark);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-top: 30px;
+            color: white;
+            max-height: 300px;
+            overflow-y: auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .results-panel h3 {
+            margin-bottom: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #result {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* ====== ANIMATIONS ====== */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50px, -50px) rotate(360deg); }
+        }
+
+        /* ====== LOADING ====== */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .loading.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .social-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+
+        /* ====== NOTIFICATION ====== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification.active {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+        }
+
+        .notification.error {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+        }
+
+        .notification.info {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <div class="container">
+        <!-- AUTHENTICATION CARD -->
+        <div class="auth-card active" id="authCard">
+            <div class="card-header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>SecureAuth Pro</h1>
+                </div>
+                <p>Enterprise-grade authentication system</p>
+            </div>
+            
+            <div class="card-body">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab-slider" id="tabSlider"></div>
+                    <div class="tab active" data-tab="login">Login</div>
+                    <div class="tab" data-tab="register">Register</div>
+                </div>
+
+                <!-- Login Form -->
+                <div class="tab-content" id="loginTab">
+                    <div class="form-group">
+                        <label for="loginEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" value="demo@example.com">
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" value="demo123">
+                        <i class="fas fa-key input-icon"></i>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="login()">
+                        <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                    </button>
+
+                    <div class="social-login">
+                        <p>Or continue with</p>
+                        <div class="social-buttons">
+                            <button class="btn btn-google" onclick="googleLogin()">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button class="btn btn-facebook" onclick="facebookLogin()">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div class="tab-content" id="registerTab" style="display: none;">
+                    <div class="form-group">
+                        <label for="regUsername"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="regUsername" class="form-control" placeholder="Choose a username" value="shraddha">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="Enter your email" value="test@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regPassword"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="regPassword" class="form-control" placeholder="Create a password" value="test123">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="register()">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div class="dashboard" id="dashboard">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">S</div>
+                    <div class="user-details">
+                        <h2 id="userName">Demo User</h2>
+                        <p id="userEmail">demo@example.com</p>
+                        <span class="status-badge status-verified" id="userStatus">
+                            <i class="fas fa-check-circle"></i> Verified
+                        </span>
+                    </div>
+                </div>
+                <button class="btn btn-danger" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="cards-grid">
+                <div class="card" onclick="getProfile()">
+                    <div class="card-icon profile">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Profile Management</h3>
+                    <p>View and update your personal information and account settings</p>
+                </div>
+
+                <div class="card" onclick="getDashboardData()">
+                    <div class="card-icon security">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Dashboard Analytics</h3>
+                    <p>Access protected dashboard with role-based features and analytics</p>
+                </div>
+
+                <div class="card" onclick="googleLogin()">
+                    <div class="card-icon social">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <h3>Social Integration</h3>
+                    <p>Connect with Google and Facebook for seamless authentication</p>
+                </div>
+
+                <div class="card" onclick="testAdmin()">
+                    <div class="card-icon admin">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Admin Panel</h3>
+                    <p>Access admin-only features and user management (if admin role)</p>
+                </div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="activity-feed">
+                <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                <div id="activityFeed">
+                    <div class="activity-item">
+                        <div class="activity-icon success">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>Successful Login</h4>
+                            <p>You logged in to your account</p>
+                        </div>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon warning">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>Security Alert</h4>
+                            <p>New login from unknown device</p>
+                        </div>
+                        <div class="activity-time">5 min ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>Failed Attempt</h4>
+                            <p>Invalid login attempt blocked</p>
+                        </div>
+                        <div class="activity-time">1 hour ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-panel">
+                <h3><i class="fas fa-code"></i> API Response</h3>
+                <pre id="result">{
+  "message": "Welcome to SecureAuth Pro!",
+  "status": "Waiting for action..."
+}</pre>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="verifyEmail()">
+                    <i class="fas fa-envelope"></i> Verify Email
+                </button>
+                <button class="btn btn-primary" onclick="refreshToken()">
+                    <i class="fas fa-sync-alt"></i> Refresh Token
+                </button>
+                <button class="btn btn-danger" onclick="testError()">
+                    <i class="fas fa-bug"></i> Test Errors
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = 'http://localhost:5000';
+        let authToken = localStorage.getItem('auth_token') || '';
+        let currentUser = null;
+
+        // DOM Elements
+        const authCard = document.getElementById('authCard');
+        const dashboard = document.getElementById('dashboard');
+        const tabSlider = document.getElementById('tabSlider');
+        const loading = document.getElementById('loading');
+        const notification = document.getElementById('notification');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if already logged in
+            if (authToken) {
+                showDashboard();
+                fetchUserProfile();
+            }
+            
+            // Setup tab switching
+            setupTabs();
+            
+            // Add animation to cards on scroll
+            setupScrollAnimations();
+        });
+
+        // ============ TAB MANAGEMENT ============
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-tab');
+                    switchTab(target);
+                });
+            });
+        }
+
+        function switchTab(tabName) {
+            // Update slider position
+            tabSlider.style.transform = tabName === 'login' 
+                ? 'translateX(0)' 
+                : 'translateX(100%)';
+            
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.toggle('active', t.getAttribute('data-tab') === tabName);
+            });
+            
+            // Show/hide forms
+            document.getElementById('loginTab').style.display = 
+                tabName === 'login' ? 'block' : 'none';
+            document.getElementById('registerTab').style.display = 
+                tabName === 'register' ? 'block' : 'none';
+            
+            // Animation
+            const forms = document.querySelectorAll('.form-group');
+            forms.forEach((form, index) => {
+                form.style.animation = 'none';
+                setTimeout(() => {
+                    form.style.animation = `fadeIn 0.5s ease-out ${index * 0.1}s`;
+                }, 10);
+            });
+        }
+
+        // ============ ANIMATIONS ============
+        function setupScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.card, .activity-item').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+        }
+
+        // ============ NOTIFICATION SYSTEM ============
+        function showNotification(message, type = 'info', duration = 3000) {
+            notification.textContent = message;
+            notification.className = `notification ${type} active`;
+            
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, duration);
+            
+            // Add to activity feed
+            addActivity(message, type);
+        }
+
+        function addActivity(message, type) {
+            const feed = document.getElementById('activityFeed');
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-triangle',
+                info: 'info-circle'
+            };
+            const colors = {
+                success: 'success',
+                error: 'danger',
+                info: 'warning'
+            };
+            
+            const activity = document.createElement('div');
+            activity.className = 'activity-item';
+            activity.style.animation = 'slideRight 0.5s ease-out';
+            
+            activity.innerHTML = `
+                <div class="activity-icon ${colors[type]}">
+                    <i class="fas fa-${icons[type]}"></i>
+                </div>
+                <div class="activity-details">
+                    <h4>${type.charAt(0).toUpperCase() + type.slice(1)}</h4>
+                    <p>${message}</p>
+                </div>
+                <div class="activity-time">Just now</div>
+            `;
+            
+            feed.insertBefore(activity, feed.firstChild);
+            
+            // Limit to 5 activities
+            if (feed.children.length > 5) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        // ============ LOADING STATE ============
+        function showLoading(message = 'Processing your request...') {
+            loading.querySelector('p').textContent = message;
+            loading.classList.add('active');
+        }
+
+        function hideLoading() {
+            loading.classList.remove('active');
+        }
+
+        // ============ AUTH FUNCTIONS ============
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            showLoading('Authenticating...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    localStorage.setItem('auth_token', authToken);
+                    currentUser = data.user;
+                    
+                    showNotification('Login successful!', 'success');
+                    showDashboard();
+                    updateUserInfo(data.user);
+                } else {
+                    showNotification(data.error || 'Login failed', 'error');
+                }
+                
+                showResult(data);
+            } catch (error) {
+                showNotification('Network error. Is server running?', 'error');
+                showResult({ error: 'Connection failed' });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            
+            if (!username || !email || !password) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            showLoading('Creating account...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    localStorage.setItem('auth_token', authToken);
+                    currentUser = data.user;
+                    
+                    showNotification('Account created successfully!', 'success');
+                    showDashboard();
+                    updateUserInfo(data.user);
+                    switchTab('login');
+                } else {
+                    showNotification(data.error || 'Registration failed', 'error');
+                }
+                
+                showResult(data);
+            } catch (error) {
+                showNotification('Registration failed', 'error');
+                showResult({ error: 'Connection failed' });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function googleLogin() {
+            showLoading('Connecting to Google...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/google`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    localStorage.setItem('auth_token', authToken);
+                    currentUser = data.user;
+                    
+                    showNotification('Google login successful!', 'success');
+                    showDashboard();
+                    updateUserInfo(data.user);
+                } else {
+                    showNotification('Google login failed', 'error');
+                }
+                
+                showResult(data);
+            } catch (error) {
+                showNotification('Google login failed', 'error');
+                showResult({ error: 'Connection failed' });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function facebookLogin() {
+            showLoading('Connecting to Facebook...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/facebook`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    localStorage.setItem('auth_token', authToken);
+                    currentUser = data.user;
+                    
+                    showNotification('Facebook login successful!', 'success');
+                    showDashboard();
+                    updateUserInfo(data.user);
+                } else {
+                    showNotification('Facebook login failed', 'error');
+                }
+                
+                showResult(data);
+            } catch (error) {
+                showNotification('Facebook login failed', 'error');
+                showResult({ error: 'Connection failed' });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ============ DASHBOARD FUNCTIONS ============
+        function showDashboard() {
+            authCard.style.animation = 'slideUp 0.8s ease-out reverse';
+            setTimeout(() => {
+                authCard.classList.remove('active');
+                dashboard.classList.add('active');
+            }, 300);
+        }
+
+        function showAuth() {
+            dashboard.style.animation = 'slideUp 0.8s ease-out reverse';
+            setTimeout(() => {
+                dashboard.classList.remove('active');
+                authCard.classList.add('active');
+            }, 300);
+        }
+
+        function updateUserInfo(user) {
+            document.getElementById('userName').textContent = user.username || user.email.split('@')[0];
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAvatar').textContent = user.username ? user.username[0].toUpperCase() : user.email[0].toUpperCase();
+            
+            const statusBadge = document.getElementById('userStatus');
+            if (user.isVerified) {
+                statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Verified';
+                statusBadge.className = 'status-badge status-verified';
+            } else {
+                statusBadge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Unverified';
+                statusBadge.className = 'status-badge status-unverified';
+            }
+        }
+
+        async function fetchUserProfile() {
+            if (!authToken) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/profile`, {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    currentUser = data.user;
+                    updateUserInfo(data.user);
+                }
+            } catch (error) {
+                console.log('Failed to fetch profile');
+            }
+        }
+
+        async function getProfile() {
+            if (!authToken) {
+                showNotification('Please login first', 'error');
+                return;
+            }
+            
+            showLoading('Fetching profile...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/profile`, {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                const data = await response.json();
+                showResult(data);
+                
+                if (data.success) {
+                    showNotification('Profile loaded successfully', 'success');
+                } else {
+                    showNotification(data.error || 'Failed to load profile', 'error');
+                }
+            } catch (error) {
+                showNotification('Failed to load profile', 'error');
+                showResult({ error: 'Connection failed' });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function getDashboardData() {
+            if (!authToken) {
+                showNotification('Please login first', 'error');
+                return;
+            }
+            
+            showLoading('Loading dashboard...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/dashboard`, {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                const data = await response.json();
+                showResult(data);
+                
+                if (data.success) {
+                    showNotification('Dashboard loaded successfully', 'success');
+                } else {
+                    showNotification(data.error || 'Failed to load dashboard', 'error');
+                }
+            } catch (error) {
+                showNotification('Failed to load dashboard', 'error');
+                showResult({ error: 'Connection failed' });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function testAdmin() {
+            if (!authToken) {
+                showNotification('Please login first', 'error');
+                return;
+            }
+            
+            showLoading('Checking admin access...');
+            
+            try {
+                // Try to access admin-only endpoint
+                const response = await fetch(`${API_URL}/api/dashboard`, {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.role === 'admin') {
+                    showNotification('Admin access granted!', 'success');
+                    showResult({ ...data, adminNote: 'You have admin privileges' });
+                } else {
+                    showNotification('Admin access denied. User role required.', 'warning');
+                    showResult({ ...data, adminNote: 'User role detected' });
+                }
+            } catch (error) {
+                showNotification('Admin test failed', 'error');
+                showResult({ error: 'Connection failed' });
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ============ UTILITY FUNCTIONS ============
+        function logout() {
+            authToken = '';
+            localStorage.removeItem('auth_token');
+            currentUser = null;
+            
+            showNotification('Logged out successfully', 'info');
+            showAuth();
+            
+            // Reset forms
+            document.getElementById('loginPassword').value = '';
+            showResult({ message: 'Logged out. Ready for new session.' });
+        }
+
+        function verifyEmail() {
+            showNotification('Verification email sent! Check console.', 'info');
+            showResult({ 
+                message: 'Email verification demo',
+                note: 'Check your server console for verification token',
+                action: 'In production, an actual email would be sent'
+            });
+        }
+
+        function refreshToken() {
+            showNotification('Token refresh simulated', 'info');
+            showResult({ 
+                message: 'Token refresh demo',
+                note: 'In production, this would issue a new JWT token',
+                currentToken: authToken ? 'Token present' : 'No token'
+            });
+        }
+
+        function testError() {
+            showNotification('Testing error handling...', 'warning');
+            showResult({
+                error: 'Simulated error for testing',
+                status: 401,
+                message: 'This is a test error response',
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        function showResult(data) {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = JSON.stringify(data, null, 2);
+            
+            // Add color coding based on success
+            if (data.success) {
+                resultElement.style.borderLeft = '4px solid #4cc9f0';
+            } else if (data.error) {
+                resultElement.style.borderLeft = '4px solid #f72585';
+            } else {
+                resultElement.style.borderLeft = '4px solid #4361ee';
+            }
+            
+            // Auto-scroll to results
+            resultElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>

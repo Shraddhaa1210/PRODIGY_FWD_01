@@ -1,0 +1,12 @@
+PORT=5000
+JWT_SECRET=your_secret_key_here
+
+# For demo only - use these dummy values
+GOOGLE_CLIENT_ID=demo-google-client-id-123
+GOOGLE_CLIENT_SECRET=demo-google-secret-456
+FACEBOOK_APP_ID=demo-facebook-app-id-789
+FACEBOOK_APP_SECRET=demo-facebook-secret-012
+
+# Email (optional)
+EMAIL_USER=demo@example.com
+EMAIL_PASS=demopassword
